@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -20,7 +22,9 @@ import com.noktigula.dottchallenge.viewmodels.LocationViewModel
 
 class DottMapFragment : Fragment(), OnMapReadyCallback {
     private val mapView: MapView by lazy { view!!.findViewById<MapView>(R.id.map_view) }
-    private val locationViewModel : LocationViewModel by viewModels()
+    private val locationViewModel : LocationViewModel by lazy {
+        ViewModelProviders.of(activity!!)[LocationViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,7 +48,6 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         val map = inMap ?: return
 
         locationViewModel.location.observe(this, Observer<LatLng> { userLocation ->
-            loge("update map")
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
         })
     }

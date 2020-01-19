@@ -20,6 +20,8 @@ import com.noktigula.dottchallenge.R
 import com.noktigula.dottchallenge.loge
 import com.noktigula.dottchallenge.viewmodels.LocationViewModel
 
+private const val DEFAULT_ZOOM = 15f
+
 class DottMapFragment : Fragment(), OnMapReadyCallback {
     private val mapView: MapView by lazy { view!!.findViewById<MapView>(R.id.map_view) }
     private val locationViewModel : LocationViewModel by lazy {
@@ -47,6 +49,7 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(inMap: GoogleMap?) {
         val map = inMap ?: return
 
+        map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM))
         locationViewModel.location.observe(this, Observer<LatLng> { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
         })

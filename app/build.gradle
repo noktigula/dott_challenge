@@ -37,6 +37,8 @@ dependencies {
     implementation libs.androidx_fragment_ktx
     implementation libs.androidx_lifecycle_extensions
 
+    implementation libs.design
+
     implementation libs.google_maps
     implementation libs.location
 

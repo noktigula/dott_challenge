@@ -1,0 +1,26 @@
+ext {
+    libVersions = [
+            androidx: '1.1.0',
+            maps: '17.0.0',
+            junit: '4.12',
+            androidx_junit: '1.1.1',
+            lifecycle_extensions: '2.1.0',
+            espresso: "3.2.0"
+    ]
+
+    libs = [
+        kotlin: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version" ,
+
+        androidx_appcompat: "androidx.appcompat:appcompat:${libVersions.androidx}" ,
+        androidx_core: "androidx.core:core-ktx:${libVersions.androidx}" ,
+        androidx_fragment_ktx: "androidx.fragment:fragment-ktx:${libVersions.androidx}" ,
+        androidx_lifecycle_extensions: "androidx.lifecycle:lifecycle-extensions:${libVersions.lifecycle_extensions}" ,
+
+        google_maps: "com.google.android.gms:play-services-maps:${libVersions.maps}" ,
+        location: "com.google.android.gms:play-services-location:${libVersions.maps}" ,
+
+        junit: "junit:junit:${libVersions.junit}" ,
+        androidx_junit: "androidx.test.ext:junit:${libVersions.androidx_junit}" ,
+        espresso: "androidx.test.espresso:espresso-core:${libVersions.espresso}"
+    ]
+}

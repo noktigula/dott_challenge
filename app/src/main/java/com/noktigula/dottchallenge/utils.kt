@@ -2,6 +2,7 @@ package com.noktigula.dottchallenge
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.model.LatLng
 
 private const val TAG = "Dott"
 
@@ -15,3 +16,5 @@ fun loge(message:String) {
         Log.e(TAG, message)
     }
 }
+
+fun LatLng.simpleString() : String = "${latitude},${longitude}"

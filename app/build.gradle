@@ -22,6 +22,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -36,6 +41,9 @@ dependencies {
     implementation libs.location
 
     implementation libs.retrofit
+    implementation libs.retrofit_gson
+
+    implementation libs.stetho
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx_junit

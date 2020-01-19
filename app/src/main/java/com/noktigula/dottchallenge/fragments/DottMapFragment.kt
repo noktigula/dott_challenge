@@ -17,8 +17,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.noktigula.dottchallenge.R
+import com.noktigula.dottchallenge.api.FoursquareApi
 import com.noktigula.dottchallenge.loge
+import com.noktigula.dottchallenge.model.RestarauntSnippet
+import com.noktigula.dottchallenge.simpleString
 import com.noktigula.dottchallenge.viewmodels.LocationViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import com.facebook.stetho.okhttp3.StethoInterceptor
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 
 private const val DEFAULT_ZOOM = 15f
 
@@ -52,6 +63,63 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM))
         locationViewModel.location.observe(this, Observer<LatLng> { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
+            loadRestaurants(map)
+        })
+
+        map.setOnCameraMoveListener { loadRestaurants(map) }
+    }
+
+    fun loadRestaurants(map:GoogleMap) {
+        loge("Loading restaraunts")
+
+        val okHttpClient = OkHttpClient.Builder()
+            .addNetworkInterceptor(StethoInterceptor())
+            .addInterceptor { chain ->
+                val original = chain.request()
+                val originalHttpUrl = original.url()
+
+                val url = originalHttpUrl.newBuilder()
+                    .addQueryParameter("client_id", getString(R.string.foursquare_id))
+                    .addQueryParameter("client_secret", getString(R.string.foursquare_secret))
+                    .addQueryParameter("v", "20200119")
+                    .build()
+
+                // Request customization: add request headers
+                val requestBuilder = original.newBuilder()
+                    .url(url)
+
+                val request = requestBuilder.build()
+                chain.proceed(request)
+
+            }
+            .build()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://api.foursquare.com/v2/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val api = retrofit.create(FoursquareApi::class.java)
+        val bounds = map.projection.visibleRegion.latLngBounds
+        val call = api.searchRestaraunts(bounds.southwest.simpleString(), bounds.northeast.simpleString())
+        loge("Enqueuing call")
+        call.enqueue(object:Callback<List<RestarauntSnippet>> {
+            override fun onFailure(call: Call<List<RestarauntSnippet>>, t: Throwable) {
+                loge("CALL FAILED BECAUSE ${t.message}")
+            }
+
+            override fun onResponse(
+                call: Call<List<RestarauntSnippet>>,
+                response: Response<List<RestarauntSnippet>>
+            ) {
+                loge("onResponse")
+                if (response.isSuccessful) {
+                    loge("Success ${response.code()}")
+                } else {
+                    loge("Fail ${response.code()}")
+                }
+            }
         })
     }
 }

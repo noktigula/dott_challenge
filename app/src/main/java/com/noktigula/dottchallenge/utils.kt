@@ -37,10 +37,12 @@ fun GoogleMap.addMarkers(markers:List<MapMarker>, visibleMarkersStorage:MutableL
 }
 
 fun GoogleMap.removeInvisibleMarkers(visibleMarkersStorage: MutableList<Marker>) {
-    //TODO need to remove marker from visible markers list
-    visibleMarkersStorage.forEach { marker ->
+    val iterator = visibleMarkersStorage.iterator()
+    while(iterator.hasNext()) {
+        val marker = iterator.next()
         if (!marker.within(bounds())) {
             marker.remove()
+            iterator.remove()
         }
     }
 }

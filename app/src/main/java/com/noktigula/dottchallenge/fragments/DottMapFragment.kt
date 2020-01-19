@@ -28,6 +28,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.noktigula.dottchallenge.model.SearchResults
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
@@ -104,20 +105,25 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         val bounds = map.projection.visibleRegion.latLngBounds
         val call = api.searchRestaraunts(bounds.southwest.simpleString(), bounds.northeast.simpleString())
         loge("Enqueuing call")
-        call.enqueue(object:Callback<List<RestarauntSnippet>> {
-            override fun onFailure(call: Call<List<RestarauntSnippet>>, t: Throwable) {
+        call.enqueue(object:Callback<SearchResults> {
+            override fun onFailure(call: Call<SearchResults>, t: Throwable) {
                 loge("CALL FAILED BECAUSE ${t.message}")
             }
 
             override fun onResponse(
-                call: Call<List<RestarauntSnippet>>,
-                response: Response<List<RestarauntSnippet>>
+                call: Call<SearchResults>,
+                response: Response<SearchResults>
             ) {
                 loge("onResponse")
                 if (response.isSuccessful) {
                     loge("Success ${response.code()}")
                 } else {
                     loge("Fail ${response.code()}")
+                }
+                val results = response.body()?.response?.venues ?: return
+
+                for (snippet in results) {
+                    loge("${snippet.id} = ${snippet.name}")
                 }
             }
         })

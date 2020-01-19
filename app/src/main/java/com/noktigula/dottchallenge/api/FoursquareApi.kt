@@ -1,7 +1,10 @@
 package com.noktigula.dottchallenge.api
 
 import com.google.android.gms.maps.model.LatLng
+import com.noktigula.dottchallenge.model.FoursquareResponse
 import com.noktigula.dottchallenge.model.RestarauntSnippet
+import com.noktigula.dottchallenge.model.SearchResponse
+import com.noktigula.dottchallenge.model.SearchResults
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -16,5 +19,5 @@ interface FoursquareApi {
         @Query("sw") sw:String,
         @Query("ne") ne:String,
         @Query("intent") intent:String= DEFAULT_INTENT,
-        @Query("categoryId") categoryId:String= CATEGORY_FOOD): Call<List<RestarauntSnippet>>
+        @Query("categoryId") categoryId:String= CATEGORY_FOOD): Call<SearchResults>
 }

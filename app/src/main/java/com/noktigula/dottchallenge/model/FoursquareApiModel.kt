@@ -1,5 +1,21 @@
 package com.noktigula.dottchallenge.model
 
+typealias SearchResults = FoursquareResponse<SearchResponse>
+
+data class FoursquareResponse<T>(
+    val meta:FoursquareMeta,
+    val response:T
+)
+
+data class SearchResponse(
+    val venues:List<RestarauntSnippet>
+)
+
+data class FoursquareMeta(
+    val code:Int,
+    val requestId:String
+)
+
 data class RestarauntSnippet (
     val id: String,
     val name: String,

@@ -26,10 +26,6 @@ class Repository(val api: FoursquareApi) {
     private val threadPoolExecutor = Executors.newCachedThreadPool()
 
     fun updateMarkersAsync(bounds:LatLngBounds) {
-        val cacheSize = synchronized(lock) {
-            cache.size
-        }
-        loge("UpdateMarkesAsync, cacheSize = $cacheSize")
         threadPoolExecutor.submit {
             updateLiveData(cachedSnippets(bounds))
             newSearch(bounds)
@@ -48,7 +44,7 @@ class Repository(val api: FoursquareApi) {
     private fun newSearch(bounds: LatLngBounds) {
         val call =
             api.searchRestaraunts(bounds.southwest.simpleString(), bounds.northeast.simpleString())
-        loge("Enqueuing call")
+
         call.enqueue(object : Callback<SearchResults> {
             override fun onFailure(call: Call<SearchResults>, t: Throwable) {
                 loge("CALL FAILED BECAUSE ${t.message}")
@@ -58,17 +54,13 @@ class Repository(val api: FoursquareApi) {
                 call: Call<SearchResults>,
                 response: Response<SearchResults>
             ) {
-                loge("onResponse")
-                if (response.isSuccessful) {
-                    loge("Success ${response.code()}")
-                } else {
+                if (!response.isSuccessful) {
                     loge("Fail ${response.code()}")
                 }
 
                 val venues = response.body()?.response?.venues ?: return
 
                 val validVenues = venues.filter { it.hasValidLocation() }
-                loge("Feeding ${validVenues.size} to cache")
                 synchronized(lock) {
                     validVenues.forEach {
                         cache[LatLng(it.location.lat!!, it.location.lng!!)] = it
@@ -80,7 +72,6 @@ class Repository(val api: FoursquareApi) {
     }
 
     private fun updateLiveData(data:List<MapMarker>) {
-        loge("Updating live data, size=${data.size}")
         markers.postValue(data)
     }
 }

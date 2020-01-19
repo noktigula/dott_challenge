@@ -64,7 +64,6 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         })
 
         mapsActivity.mapViewModel.markers.observe(this, Observer<List<MapMarker>> { markers ->
-            loge("New markers received")
             map.addMarkers(markers, visibleMarkers)
             map.removeInvisibleMarkers(visibleMarkers)
         })

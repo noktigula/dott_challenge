@@ -15,6 +15,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.noktigula.dottchallenge.R
+import com.noktigula.dottchallenge.loge
 import com.noktigula.dottchallenge.viewmodels.LocationViewModel
 
 class DottMapFragment : Fragment(), OnMapReadyCallback {
@@ -43,6 +44,7 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         val map = inMap ?: return
 
         locationViewModel.location.observe(this, Observer<LatLng> { userLocation ->
+            loge("update map")
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
         })
     }

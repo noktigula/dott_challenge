@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -67,7 +68,16 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         })
 
         map.setOnCameraIdleListener { loadRestaurants(map) }
+        map.setOnMarkerClickListener {
+            mapsActivity.selectedViewModelFactory.selectedVenue.value = it.tag as MapMarker
+            true
+        }
+
+        map.setOnMapClickListener {
+            mapsActivity.selectedViewModelFactory.selectedVenue.value = null
+        }
     }
+
 
     private fun loadRestaurants(map:GoogleMap) {
         val bounds = map.projection.visibleRegion.latLngBounds

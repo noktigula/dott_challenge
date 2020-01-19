@@ -26,17 +26,18 @@ fun LatLng.simpleString() : String = "${latitude},${longitude}"
 
 fun GoogleMap.addMarkers(markers:List<MapMarker>, visibleMarkersStorage:MutableList<Marker>) {
     markers.forEach {
-        visibleMarkersStorage.add(
-            this.addMarker(
-                MarkerOptions()
-                    .position(it.position)
-                    .title(it.name)
-            )
+        val marker = this.addMarker(
+            MarkerOptions()
+                .position(it.position)
+                .title(it.name)
         )
+        marker.tag = it
+        visibleMarkersStorage.add(marker)
     }
 }
 
 fun GoogleMap.removeInvisibleMarkers(visibleMarkersStorage: MutableList<Marker>) {
+    //TODO need to remove marker from visible markers list
     visibleMarkersStorage.forEach { marker ->
         if (!marker.within(bounds())) {
             marker.remove()

@@ -77,5 +77,5 @@ class Repository(val api: FoursquareApi) {
 }
 
 private fun RestarauntSnippet.toMapMarker() : MapMarker {
-    return MapMarker(LatLng(this.location.lat!!, this.location.lng!!), this.name)
+    return MapMarker(LatLng(this.location.lat!!, this.location.lng!!), this.name, this.location.address ?: "")
 }

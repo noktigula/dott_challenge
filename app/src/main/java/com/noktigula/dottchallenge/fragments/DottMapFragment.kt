@@ -1,27 +1,22 @@
 package com.noktigula.dottchallenge.fragments
 
-import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.noktigula.dottchallenge.R
 import com.noktigula.dottchallenge.api.FoursquareApi
 import com.noktigula.dottchallenge.loge
-import com.noktigula.dottchallenge.model.RestarauntSnippet
 import com.noktigula.dottchallenge.simpleString
-import com.noktigula.dottchallenge.viewmodels.LocationViewModel
+import com.noktigula.dottchallenge.viewmodels.MapViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,15 +24,14 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.noktigula.dottchallenge.model.SearchResults
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
 private const val DEFAULT_ZOOM = 15f
 
 class DottMapFragment : Fragment(), OnMapReadyCallback {
     private val mapView: MapView by lazy { view!!.findViewById<MapView>(R.id.map_view) }
-    private val locationViewModel : LocationViewModel by lazy {
-        ViewModelProviders.of(activity!!)[LocationViewModel::class.java]
+    private val mapViewModel : MapViewModel by lazy {
+        ViewModelProviders.of(activity!!)[MapViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -62,7 +56,7 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         val map = inMap ?: return
 
         map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM))
-        locationViewModel.location.observe(this, Observer<LatLng> { userLocation ->
+        mapViewModel.location.observe(this, Observer<LatLng> { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
             loadRestaurants(map)
         })

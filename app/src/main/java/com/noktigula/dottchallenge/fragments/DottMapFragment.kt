@@ -12,9 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
-import com.noktigula.dottchallenge.R
 import com.noktigula.dottchallenge.network.FoursquareApi
-import com.noktigula.dottchallenge.loge
 import com.noktigula.dottchallenge.viewmodels.MapViewModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -22,7 +20,7 @@ import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.noktigula.dottchallenge.MapsActivity
+import com.noktigula.dottchallenge.*
 import com.noktigula.dottchallenge.data.Repository
 import com.noktigula.dottchallenge.model.MapMarker
 import com.noktigula.dottchallenge.network.RetrofitInstance
@@ -76,21 +74,3 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         (activity as MapsActivity).repository.updateMarkersAsync(bounds)
     }
 }
-
-private fun GoogleMap.addMarkers(markers:List<MapMarker>, visibleMarkersStorage:MutableList<Marker>) {
-    markers.forEach {
-        visibleMarkersStorage.add(this.addMarker(MarkerOptions().position(it.position).title(it.name)))
-    }
-}
-
-private fun GoogleMap.removeInvisibleMarkers(visibleMarkersStorage: MutableList<Marker>) {
-    visibleMarkersStorage.forEach { marker ->
-        if (!marker.within(bounds())) {
-            marker.remove()
-        }
-    }
-}
-
-private fun GoogleMap.bounds() = projection.visibleRegion.latLngBounds
-
-private fun Marker.within(bounds:LatLngBounds) = bounds.contains(this.position)

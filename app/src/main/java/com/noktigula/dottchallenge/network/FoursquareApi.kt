@@ -1,13 +1,8 @@
-package com.noktigula.dottchallenge.api
+package com.noktigula.dottchallenge.network
 
-import com.google.android.gms.maps.model.LatLng
-import com.noktigula.dottchallenge.model.FoursquareResponse
-import com.noktigula.dottchallenge.model.RestarauntSnippet
-import com.noktigula.dottchallenge.model.SearchResponse
 import com.noktigula.dottchallenge.model.SearchResults
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 private const val CATEGORY_FOOD = "4d4b7105d754a06374d81259"

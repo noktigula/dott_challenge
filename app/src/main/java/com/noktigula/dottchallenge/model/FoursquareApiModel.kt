@@ -21,7 +21,9 @@ data class RestarauntSnippet (
     val name: String,
     val location: RestarauntLocation,
     val categories: List<RestarauntCategory>
-)
+) {
+    fun hasValidLocation() = location.lat != null && location.lng != null
+}
 
 data class RestarauntLocation(
     val address: String?,
@@ -31,7 +33,7 @@ data class RestarauntLocation(
     val postalCode: String?,
     val country: String?,
     val lat: Double?,
-    val lon: Double?,
+    val lng: Double?,
     val distance: Int?,
     val isFuzzed: Boolean?
 )

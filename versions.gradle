@@ -5,7 +5,8 @@ ext {
             junit: '4.12',
             androidx_junit: '1.1.1',
             lifecycle_extensions: '2.1.0',
-            espresso: "3.2.0"
+            espresso: "3.2.0",
+            retrofit: '2.7.1'
     ]
 
     libs = [
@@ -21,6 +22,8 @@ ext {
 
         junit: "junit:junit:${libVersions.junit}" ,
         androidx_junit: "androidx.test.ext:junit:${libVersions.androidx_junit}" ,
-        espresso: "androidx.test.espresso:espresso-core:${libVersions.espresso}"
+        espresso: "androidx.test.espresso:espresso-core:${libVersions.espresso}",
+
+        retrofit: "com.squareup.retrofit2:retrofit:${libVersions.retrofit}"
     ]
 }

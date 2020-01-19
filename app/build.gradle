@@ -35,6 +35,8 @@ dependencies {
     implementation libs.google_maps
     implementation libs.location
 
+    implementation libs.retrofit
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx_junit
     androidTestImplementation libs.espresso

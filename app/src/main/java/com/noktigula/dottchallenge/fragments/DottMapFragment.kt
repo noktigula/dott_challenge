@@ -77,7 +77,6 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun loadRestaurants(map:GoogleMap) {
-        val bounds = map.projection.visibleRegion.latLngBounds
-        (activity as MapsActivity).repository.updateMarkersAsync(bounds)
+        (activity as MapsActivity).repository.updateMarkersAsync(map.bounds())
     }
 }

@@ -11,6 +11,7 @@ ext {
             stetho: '1.5.1',
             design: '28.0.0',
             mockito: '1.10.19',
+            mockito_kotlin: '2.2.0'
     ]
 
     libs = [
@@ -35,6 +36,7 @@ ext {
 
         stetho: "com.facebook.stetho:stetho-okhttp3:${libVersions.stetho}",
 
-        mockito: "org.mockito:mockito-core:${libVersions.mockito}"
+        mockito: "org.mockito:mockito-core:${libVersions.mockito}",
+        mockito_kotlin: "com.nhaarman.mockitokotlin2:mockito-kotlin:${libVersions.mockito_kotlin}"
     ]
 }

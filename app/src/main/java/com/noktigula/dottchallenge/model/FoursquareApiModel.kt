@@ -1,5 +1,7 @@
 package com.noktigula.dottchallenge.model
 
+import com.google.android.gms.maps.model.LatLng
+
 typealias SearchResults = FoursquareResponse<SearchResponse>
 
 data class FoursquareResponse<T>(
@@ -24,6 +26,13 @@ data class RestarauntSnippet (
 ) {
     fun hasValidLocation() = location.lat != null && location.lng != null
 }
+
+data class Snippet (
+    val id: String,
+    val name:String,
+    val location: LatLng,
+    val address : String
+)
 
 data class RestarauntLocation(
     val address: String?,

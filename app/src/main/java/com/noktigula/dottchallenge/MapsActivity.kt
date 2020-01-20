@@ -4,27 +4,31 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.noktigula.dottchallenge.data.CacheImpl
 import com.noktigula.dottchallenge.data.Repository
 import com.noktigula.dottchallenge.listeners.UserLocationListener
+import com.noktigula.dottchallenge.network.DataLoaderImpl
 import com.noktigula.dottchallenge.network.RetrofitInstance
 import com.noktigula.dottchallenge.viewmodels.MapViewModel
-import com.noktigula.dottchallenge.viewmodels.MapViewModelFactory
 import com.noktigula.dottchallenge.viewmodels.SelectedVenueViewModel
 
 class MapsActivity : AppCompatActivity() {
     val repository by lazy {
-        Repository(RetrofitInstance.foursquareApi)
+        Repository(
+            cache = CacheImpl,
+            loader = DataLoaderImpl(RetrofitInstance.foursquareApi)
+        ) {
+            mapViewModel.markers.postValue(it)
+        }
     }
 
     val mapViewModel : MapViewModel by lazy {
-        val factory = MapViewModelFactory(repository)
-        ViewModelProviders.of(this, factory).get(MapViewModel::class.java)
+        ViewModelProviders.of(this).get(MapViewModel::class.java)
     }
 
     val selectedViewModelFactory : SelectedVenueViewModel by lazy {

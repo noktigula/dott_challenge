@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.nhaarman.mockitokotlin2.*
 import com.noktigula.dottchallenge.assertListEquals
+import com.noktigula.dottchallenge.createSnippets
 import com.noktigula.dottchallenge.model.Snippet
 import com.noktigula.dottchallenge.network.DataLoader
 import junit.framework.Assert.assertTrue
@@ -68,18 +69,5 @@ class RepositoryTest {
         verify(mockCache).update( check {
             assertListEquals("Cache update fail: updated not with network data", networkSnippets, it)
         })
-    }
-
-    private fun createSnippets(prefix:String, count:Int) : List<Snippet> {
-        val list = mutableListOf<Snippet>()
-        for (i in 0 until count) {
-            list.add(Snippet(
-                id = "${prefix}_${i}_id",
-                name = "${prefix}_${i}_name",
-                location = LatLng(i.toDouble(), i.toDouble()),
-                address = "${prefix}_${i}_address"
-            ))
-        }
-        return list
     }
 }

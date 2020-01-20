@@ -20,7 +20,7 @@ import com.noktigula.dottchallenge.viewmodels.SelectedVenueViewModel
 class MapsActivity : AppCompatActivity() {
     val repository by lazy {
         Repository(
-            cache = CacheImpl,
+            cache = CacheImpl(),
             loader = DataLoaderImpl(RetrofitInstance.foursquareApi)
         ) { snippets ->
             mapViewModel.markers.postValue(snippets.map { it.toMapMarker() })

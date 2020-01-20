@@ -8,7 +8,7 @@ interface Cache<T> {
     fun get():T
 }
 
-object CacheImpl : Cache<List<Snippet>> {
+class CacheImpl : Cache<List<Snippet>> {
     private val cache = HashMap<LatLng, Snippet>()
 
     override fun update(data:List<Snippet>) {

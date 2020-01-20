@@ -48,6 +48,7 @@ dependencies {
     implementation libs.stetho
 
     testImplementation libs.junit
+    testImplementation libs.mockito
     androidTestImplementation libs.androidx_junit
     androidTestImplementation libs.espresso
 }

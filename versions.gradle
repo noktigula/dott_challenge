@@ -9,7 +9,8 @@ ext {
             retrofit: '2.7.1',
             gson: '2.8.5',
             stetho: '1.5.1',
-            design: '28.0.0'
+            design: '28.0.0',
+            mockito: '1.10.19',
     ]
 
     libs = [
@@ -32,6 +33,8 @@ ext {
         retrofit: "com.squareup.retrofit2:retrofit:${libVersions.retrofit}",
         retrofit_gson: "com.squareup.retrofit2:converter-gson:${libVersions.retrofit}",
 
-        stetho: "com.facebook.stetho:stetho-okhttp3:${libVersions.stetho}"
+        stetho: "com.facebook.stetho:stetho-okhttp3:${libVersions.stetho}",
+
+        mockito: "org.mockito:mockito-core:${libVersions.mockito}"
     ]
 }

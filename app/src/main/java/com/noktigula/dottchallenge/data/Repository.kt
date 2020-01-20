@@ -18,16 +18,13 @@ class Repository (
     private val threadPoolExecutor = Executors.newCachedThreadPool()
 
     fun updateMarkersAsync(bounds:LatLngBounds) {
-        loge("updateMarkersAsync")
         threadPoolExecutor.submit {
-            val data = cachedSnippets(bounds)
-            callback(data)
+            callback(cachedSnippets(bounds))
             newSearch(bounds)
         }
     }
 
     private fun cachedSnippets(bounds:LatLngBounds): List<MapMarker> {
-        loge("cachedSnippets")
         return synchronized(lock) {
             cache.get()
                 .filter { bounds.contains(it.location) }
@@ -36,7 +33,6 @@ class Repository (
     }
 
     private fun newSearch(bounds: LatLngBounds) {
-        loge("newSearch")
         loader.load(bounds) { newSnippets ->
             synchronized(lock) {
                 cache.update(newSnippets)

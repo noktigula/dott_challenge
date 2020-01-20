@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -46,15 +48,15 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
 
         map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM))
         val mapsActivity = activity as MapsActivity
-        mapsActivity.mapViewModel.location.observe(this, Observer<LatLng> { userLocation ->
+        observe(mapsActivity.mapViewModel.location) { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
             loadRestaurants(map)
-        })
+        }
 
-        mapsActivity.mapViewModel.markers.observe(this, Observer<List<MapMarker>> { markers ->
+        observe(mapsActivity.mapViewModel.markers) { markers ->
             map.addMarkers(markers, visibleMarkers)
             map.removeInvisibleMarkers(visibleMarkers)
-        })
+        }
 
         map.setOnCameraIdleListener { loadRestaurants(map) }
         map.setOnMarkerClickListener {
@@ -69,6 +71,9 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         map.setMinZoomPreference(CITY)
     }
 
+    private fun <T> observe(data:LiveData<T>, callback: (T)->Unit) {
+        data.observe(this, Observer(callback))
+    }
 
     private fun loadRestaurants(map:GoogleMap) {
         val bounds = map.projection.visibleRegion.latLngBounds

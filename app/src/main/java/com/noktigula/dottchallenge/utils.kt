@@ -2,6 +2,7 @@ package com.noktigula.dottchallenge
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -48,5 +49,9 @@ fun GoogleMap.removeInvisibleMarkers(visibleMarkersStorage: MutableList<Marker>)
 }
 
 fun GoogleMap.bounds() = projection.visibleRegion.latLngBounds
+
+fun GoogleMap.zoomTo(level:Float) {
+    moveCamera(CameraUpdateFactory.zoomTo(level))
+}
 
 fun Marker.within(bounds: LatLngBounds) = bounds.contains(this.position)

@@ -46,7 +46,8 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(inMap: GoogleMap?) {
         val map = inMap ?: return
 
-        map.moveCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM))
+        map.zoomTo(DEFAULT_ZOOM)
+
         val mapsActivity = activity as MapsActivity
         observe(mapsActivity.mapViewModel.location) { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))

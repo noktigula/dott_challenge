@@ -9,6 +9,8 @@ import com.noktigula.dottchallenge.network.DataLoader
 import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.Executor
+import java.util.concurrent.ExecutorService
 
 class RepositoryTest {
 
@@ -42,7 +44,8 @@ class RepositoryTest {
         var updates = 0
         val repository = Repository(
             cache = mockCache,
-            loader = mockLoader
+            loader = mockLoader,
+            threadPoolExecutor = Executor { p0 -> p0.run() }
         ) {
             if (updates == 0) {
                 assertListEquals("First update should be from cache", cachedSnippets, it)

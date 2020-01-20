@@ -1,24 +1,22 @@
 package com.noktigula.dottchallenge.data
 
-import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLngBounds
-import com.noktigula.dottchallenge.default
-import com.noktigula.dottchallenge.loge
 import com.noktigula.dottchallenge.model.MapMarker
 import com.noktigula.dottchallenge.model.Snippet
 import com.noktigula.dottchallenge.network.DataLoader
+import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class Repository (
     private val cache: Cache<List<Snippet>>,
     private val loader: DataLoader<LatLngBounds, List<Snippet>>,
+    private val threadPoolExecutor: Executor = Executors.newCachedThreadPool(),
     private val callback: (List<MapMarker>) -> Unit
 ) {
     private val lock = Any()
-    private val threadPoolExecutor = Executors.newCachedThreadPool()
 
     fun updateMarkersAsync(bounds:LatLngBounds) {
-        threadPoolExecutor.submit {
+        threadPoolExecutor.execute {
             callback(cachedSnippets(bounds))
             newSearch(bounds)
         }

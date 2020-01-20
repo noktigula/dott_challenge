@@ -49,12 +49,13 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         map.zoomTo(DEFAULT_ZOOM)
 
         val mapsActivity = activity as MapsActivity
-        observe(mapsActivity.mapViewModel.location) { userLocation ->
+
+        onLocationUpdate(mapsActivity) { userLocation ->
             map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
             loadRestaurants(map)
         }
 
-        observe(mapsActivity.mapViewModel.markers) { markers ->
+        onMarkersUpdate(mapsActivity) { markers ->
             map.addMarkers(markers, visibleMarkers)
             map.removeInvisibleMarkers(visibleMarkers)
         }
@@ -70,6 +71,14 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
         }
 
         map.setMinZoomPreference(CITY)
+    }
+
+    private fun onLocationUpdate(activity: MapsActivity, callback:(LatLng)->Unit) {
+        observe(activity.mapViewModel.location) { callback(it) }
+    }
+
+    private fun onMarkersUpdate(activity: MapsActivity, callback: (List<MapMarker>) -> Unit) {
+        observe(activity.mapViewModel.markers) { callback(it) }
     }
 
     private fun <T> observe(data:LiveData<T>, callback: (T)->Unit) {

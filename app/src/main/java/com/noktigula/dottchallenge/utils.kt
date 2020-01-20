@@ -55,6 +55,10 @@ fun GoogleMap.zoomTo(level:Float) {
     moveCamera(CameraUpdateFactory.zoomTo(level))
 }
 
+fun GoogleMap.show(location:LatLng) {
+    moveCamera(CameraUpdateFactory.newLatLng(location))
+}
+
 fun Marker.within(bounds: LatLngBounds) = bounds.contains(this.position)
 
 fun Snippet.toMapMarker() : MapMarker {

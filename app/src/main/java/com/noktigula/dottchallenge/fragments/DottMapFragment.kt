@@ -5,25 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.noktigula.dottchallenge.*
-import com.noktigula.dottchallenge.model.MapMarker
-
-private const val STREET = 15f
-private const val CITY = 10f
-private const val DEFAULT_ZOOM = STREET
+import com.noktigula.dottchallenge.presenters.DottMapPresenterImpl
+import com.noktigula.dottchallenge.presenters.MapImpl
 
 class DottMapFragment : Fragment(), OnMapReadyCallback {
     private val mapView: MapView by lazy { view!!.findViewById<MapView>(R.id.map_view) }
-    private val visibleMarkers = mutableListOf<Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,47 +35,15 @@ class DottMapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(inMap: GoogleMap?) {
         val map = inMap ?: return
-
-        map.zoomTo(DEFAULT_ZOOM)
-
         val mapsActivity = activity as MapsActivity
 
-        onLocationUpdate(mapsActivity) { userLocation ->
-            map.moveCamera(CameraUpdateFactory.newLatLng(userLocation))
-            loadRestaurants(map)
-        }
+        val presenter = DottMapPresenterImpl(
+            mapsActivity,
+            mapsActivity.mapViewModel,
+            mapsActivity.selectedViewModelFactory,
+            mapsActivity.repository
+        )
 
-        onMarkersUpdate(mapsActivity) { markers ->
-            map.addMarkers(markers, visibleMarkers)
-            map.removeInvisibleMarkers(visibleMarkers)
-        }
-
-        map.setOnCameraIdleListener { loadRestaurants(map) }
-        map.setOnMarkerClickListener {
-            mapsActivity.selectedViewModelFactory.selectedVenue.value = it.tag as MapMarker
-            true
-        }
-
-        map.setOnMapClickListener {
-            mapsActivity.selectedViewModelFactory.selectedVenue.value = null
-        }
-
-        map.setMinZoomPreference(CITY)
-    }
-
-    private fun onLocationUpdate(activity: MapsActivity, callback:(LatLng)->Unit) {
-        observe(activity.mapViewModel.location) { callback(it) }
-    }
-
-    private fun onMarkersUpdate(activity: MapsActivity, callback: (List<MapMarker>) -> Unit) {
-        observe(activity.mapViewModel.markers) { callback(it) }
-    }
-
-    private fun <T> observe(data:LiveData<T>, callback: (T)->Unit) {
-        data.observe(this, Observer(callback))
-    }
-
-    private fun loadRestaurants(map:GoogleMap) {
-        (activity as MapsActivity).repository.updateMarkersAsync(map.bounds())
+        presenter.prepareMap(MapImpl(map))
     }
 }

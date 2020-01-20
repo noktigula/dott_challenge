@@ -1,6 +1,5 @@
 package com.noktigula.dottchallenge.data
 
-import com.google.android.gms.maps.model.LatLng
 import com.noktigula.dottchallenge.model.Snippet
 
 interface Cache<T> {
@@ -9,13 +8,13 @@ interface Cache<T> {
 }
 
 class CacheImpl : Cache<List<Snippet>> {
-    private val cache = HashMap<LatLng, Snippet>()
+    private val cache = mutableListOf<Snippet>()
 
     override fun update(data:List<Snippet>) {
-        data.forEach { cache[it.location] = it }
+        cache.addAll(data)
     }
 
     override fun get(): List<Snippet> {
-       return cache.values.toList()
+       return cache
     }
 }

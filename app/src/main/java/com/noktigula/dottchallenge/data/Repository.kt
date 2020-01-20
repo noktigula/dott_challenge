@@ -1,7 +1,5 @@
 package com.noktigula.dottchallenge.data
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -15,7 +13,6 @@ import com.noktigula.dottchallenge.simpleString
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 
 class Repository(val api: FoursquareApi) {

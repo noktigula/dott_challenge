@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.noktigula.dottchallenge.model.MapMarker
+import com.noktigula.dottchallenge.model.Snippet
 
 private const val TAG = "Dott"
 
@@ -55,3 +56,7 @@ fun GoogleMap.zoomTo(level:Float) {
 }
 
 fun Marker.within(bounds: LatLngBounds) = bounds.contains(this.position)
+
+fun Snippet.toMapMarker() : MapMarker {
+    return MapMarker(this.location, this.name, this.address)
+}

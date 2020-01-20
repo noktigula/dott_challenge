@@ -10,13 +10,12 @@ import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.Executor
-import java.util.concurrent.ExecutorService
 
 class RepositoryTest {
 
     private val cachedSnippets = createSnippets("cached", 5)
     private val networkSnippets = createSnippets("network", 5)
-    private val dummyBounds = LatLngBounds(LatLng(0.0, 0.0), LatLng(0.0, 0.0))
+    private val dummyBounds = LatLngBounds(LatLng(0.0, 0.0), LatLng(5.0, 5.0))
 
     lateinit var mockCache: Cache<List<Snippet>>
     lateinit var mockCallback: (List<Snippet>)->Unit
@@ -47,18 +46,20 @@ class RepositoryTest {
             loader = mockLoader,
             threadPoolExecutor = Executor { p0 -> p0.run() }
         ) {
-            if (updates == 0) {
-                assertListEquals("First update should be from cache", cachedSnippets, it)
-                updates++
-            } else if (updates == 1) {
-                assertListEquals(
-                    message = "Second update should be both cached and network",
-                    expected = listOf(*cachedSnippets.toTypedArray(), *networkSnippets.toTypedArray()),
-                    actual = it
-                )
-                updates++
-            } else {
-                assertTrue(false)
+            when (updates) {
+                0 -> {
+                    assertListEquals("First update should be from cache", cachedSnippets, it)
+                    updates++
+                }
+                1 -> {
+                    assertListEquals(
+                        message = "Second update should be both cached and network",
+                        expected = listOf(*cachedSnippets.toTypedArray(), *networkSnippets.toTypedArray()),
+                        actual = it
+                    )
+                    updates++
+                }
+                else -> assertTrue(false)
             }
         }
 

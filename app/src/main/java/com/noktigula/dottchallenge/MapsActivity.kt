@@ -22,8 +22,8 @@ class MapsActivity : AppCompatActivity() {
         Repository(
             cache = CacheImpl,
             loader = DataLoaderImpl(RetrofitInstance.foursquareApi)
-        ) {
-            mapViewModel.markers.postValue(it)
+        ) { snippets ->
+            mapViewModel.markers.postValue(snippets.map { it.toMapMarker() })
         }
     }
 

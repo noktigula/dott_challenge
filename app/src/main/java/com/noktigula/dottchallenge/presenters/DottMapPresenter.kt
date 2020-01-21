@@ -1,10 +1,5 @@
 package com.noktigula.dottchallenge.presenters
 
-import android.location.LocationProvider
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -12,12 +7,13 @@ import com.google.android.gms.maps.model.Marker
 import com.noktigula.dottchallenge.*
 import com.noktigula.dottchallenge.data.Repository
 import com.noktigula.dottchallenge.model.MapMarker
-import com.noktigula.dottchallenge.viewmodels.MapViewModel
-import com.noktigula.dottchallenge.viewmodels.SelectedVenueViewModel
 
 private const val STREET = 15f
 private const val CITY = 10f
 private const val DEFAULT_ZOOM = STREET
+
+typealias Subscription<T> = ((T)->Unit)->Unit
+typealias Consumer<T> = (T)->Unit
 
 interface DottMapPresenter {
     fun prepareMap(map:Map)
@@ -35,41 +31,29 @@ interface Map {
 }
 
 class DottMapPresenterImpl(
-    private val lifecycleOwner:LifecycleOwner,
-    private val mapViewModel:MapViewModel,
-    private val selectedVenueViewModel: SelectedVenueViewModel,
+    private val onLocation: Subscription<LatLng>,
+    private val onMarkers: Subscription<List<MapMarker>>,
+    private val onVenueSelected: Consumer<MapMarker?>,
     private val repository:Repository
 ) : DottMapPresenter {
     override fun prepareMap(map: Map) {
         map.zoomTo(DEFAULT_ZOOM)
         map.setMinimalZoomLevel(CITY)
 
-        onLocationUpdate(mapViewModel) {
+        onLocation {
             map.showLocation(it)
-            loadRestaraunts(map.bounds())
+            loadRestaurants(map.bounds())
         }
 
-        onMarkersUpdate(mapViewModel) { map.onMarkersUpdate(it) }
+        onMarkers { map.onMarkersUpdate(it) }
 
-        map.onMarkerClicked { selectedVenueViewModel.selectedVenue.value = it.tag as MapMarker }
-        map.onMapClicked { selectedVenueViewModel.selectedVenue.value = null }
+        map.onMarkerClicked { onVenueSelected(it.tag as MapMarker) }
+        map.onMapClicked { onVenueSelected(null) }
 
-        map.onMapScrollStopped { loadRestaraunts(map.bounds()) }
+        map.onMapScrollStopped { loadRestaurants(map.bounds()) }
     }
 
-    private fun onLocationUpdate(viewModel: MapViewModel, callback:(LatLng)->Unit) {
-        observe(viewModel.location) { callback(it) }
-    }
-
-    private fun onMarkersUpdate(viewModel: MapViewModel, callback: (List<MapMarker>) -> Unit) {
-        observe(viewModel.markers) { callback(it) }
-    }
-
-    private fun <T> observe(data: LiveData<T>, callback: (T)->Unit) {
-        data.observe(lifecycleOwner, Observer(callback))
-    }
-
-    private fun loadRestaraunts(bounds: LatLngBounds) {
+    private fun loadRestaurants(bounds: LatLngBounds) {
         repository.updateMarkersAsync(bounds)
     }
 }
